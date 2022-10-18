@@ -1,5 +1,13 @@
 {
   "dependencies": {
     "dotenv": "^16.0.2"
+  },
+  "devDependencies": {
+    "concurrently": "^7.4.0"
+  },
+  "scripts": {
+    "client": "cd client && npm run start",
+    "server": "cd server && nodemon server.js",
+    "startall": "concurrently \"npm run client\" \"npm run server\""
   }
 }
