@@ -184,11 +184,14 @@ app.delete("/delete", async (req, res) => {
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 
 app.get("*", function (_, res) {
-  res.sendFile(path.join(__dirname, "./client/build/"), function (err) {
-    if (err) {
-      res.status(500).send(err);
+  res.sendFile(
+    path.join(__dirname, "./client/build/index.html"),
+    function (err) {
+      if (err) {
+        res.status(500).send(err);
+      }
     }
-  });
+  );
 });
 
 const PORT = 5001;
