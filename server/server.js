@@ -180,6 +180,17 @@ app.delete("/delete", async (req, res) => {
     .catch((error) => console.log(error.message));
 });
 
+//Adding for vercel
+app.use(express.static(path.join(__dirname, "./frontend/build")));
+
+app.get("*", function (_, res) {
+  res.sendFile(path.join(__dirname, "./client/build/"), function (err) {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
+
 const PORT = 5001;
 app.listen(PORT, () => {
   console.log("Server has started on port " + PORT);
