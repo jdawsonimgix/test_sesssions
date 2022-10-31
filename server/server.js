@@ -6,7 +6,10 @@ const storage = require("./firebase");
 const axios = require("axios").default;
 var bodyParser = require("body-parser");
 const fs = require("fs");
+const path = require("path");
+
 //require("dotenv").config();
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
 app.use(cors());
@@ -23,10 +26,13 @@ app.use(
 const memoStorage = multer.memoryStorage();
 const upload = multer({ memoStorage });
 
+app.get("/testing", (req, res) => {
+  res.send("Hello World!");
+});
+
 //Start a session.
 app.post("/startImgixSession", upload.single("pic"), async (req, res) => {
   const file = req.file;
-  console.log("Starting imgix session in server.js");
 
   var config = {
     method: "post",
@@ -34,8 +40,7 @@ app.post("/startImgixSession", upload.single("pic"), async (req, res) => {
       `https://api.imgix.com/api/v1/sources/62e31fcb03d7afea23063596/upload-sessions/` +
       file.originalname,
     headers: {
-      Authorization:
-        "Bearer ak_a5261930e96dd8375b900030d00e26e20da450c1d8aa0f93650c840f0e159af5",
+      Authorization: "Bearer " + process.env.IMGIX_API,
       "Content-Type": file.mimetype,
     },
     data: req.file.buffer,
@@ -181,18 +186,7 @@ app.delete("/delete", async (req, res) => {
 });
 
 //Adding for vercel
-app.use(express.static(path.join(__dirname, "./frontend/build")));
-
-app.get("*", function (_, res) {
-  res.sendFile(
-    path.join(__dirname, "./client/build/index.html"),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    }
-  );
-});
+app.use(express.static("client/build"));
 
 const PORT = 5001;
 app.listen(PORT, () => {
